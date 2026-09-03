@@ -1,0 +1,57 @@
+generated: '2026-09-03'
+method: probed
+source: live GET probes of https://artifactories.com/.well-known/* on 2026-09-03
+note: >-
+  The standard RFC-registered paths (security.txt, openid-configuration, oauth-authorization-server,
+  oauth-protected-resource, api-catalog, ai-plugin.json, aauth-resource.json, agent-card.json,
+  agent.json) all returned 404 with an HTML error page. What Artifactories DOES serve under
+  /.well-known/ is an agent-discovery set: an ARD v0.91 manifest, an MCP server card against the
+  official Model Context Protocol server schema, an Agent Skills discovery index with a sha256
+  digest, an installable SKILL.md, and an ai-catalog.json that mirrors the ARD entries. Those four
+  are real JSON/Markdown documents, not SPA shells - each was parsed before being recorded as a hit.
+hosts:
+- host: artifactories.com
+  documents:
+  - path: /.well-known/ard.json
+    status: 200
+    content_type: application/json
+    file: artifactories-ard.json
+    document: Agentic Resource Discovery v0.91 manifest, 2 entries (agent skill + MCP server)
+  - path: /.well-known/mcp-server-card.json
+    status: 200
+    content_type: application/json
+    file: artifactories-mcp-server-card.json
+    document: MCP server card, schema 2025-12-11, remotes[] + packages[]
+  - path: /.well-known/ai-catalog.json
+    status: 200
+    content_type: application/json
+    file: artifactories-ai-catalog.json
+    document: AI catalog mirroring the ARD entries
+  - path: /.well-known/agent-skills/index.json
+    status: 200
+    content_type: application/json
+    file: artifactories-agent-skills-index.json
+    document: Agent Skills discovery index 0.2.0, one digest-pinned skill
+  - path: /.well-known/agent-skills/artifactories/SKILL.md
+    status: 200
+    content_type: text/markdown
+    file: ../skills/artifactories-artifactories.md
+    document: Installable Artifactories Agent Skill (saved under skills/)
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404

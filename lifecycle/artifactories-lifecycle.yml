@@ -1,0 +1,91 @@
+generated: '2026-09-03'
+method: searched
+source: >-
+  https://api.github.com/repos/barangaroo/artifactories/releases +
+  https://artifactories.com/v1/health + https://artifactories.com/v1/live +
+  openapi/artifactories-agent-api-openapi.json
+versioning:
+  api_path_prefix: /v1
+  service_version: 0.6.14
+  service_version_observed: '2026-09-03'
+  spec_version_field: info.version
+  scheme: semver
+  channels:
+  - name: service
+    tag_pattern: vX.Y.Z
+    latest: v0.6.12
+    latest_date: '2026-09-01'
+    note: >-
+      The running service reported 0.6.14 at /v1/health on 2026-09-03 while the newest GitHub
+      release tag is v0.6.12 - two deployed patch versions are ahead of the last tagged release.
+  - name: mcp-package
+    tag_pattern: artifactories-mcp-vX.Y.Z
+    latest: artifactories-mcp-v0.3.1
+    latest_date: '2026-09-02'
+  breaking_change_policy: not published
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No deprecation or sunset policy is published, no RFC 8594 Sunset/Deprecation headers were
+    observed, and no operation in the 27-operation spec carries deprecated: true. The service is
+    two weeks old (first release 2026-08-30), so this is an absence of policy rather than an
+    accumulation of undocumented removals. Recorded honestly - no Deprecation pointer is emitted.
+  precedent:
+    change: >-
+      Release v0.4.0 (2026-08-30) removed the A2A agent-card label and removed synthetic public
+      activity. The removal was announced in the release notes with a stated reason, which is the
+      closest thing to a deprecation practice on record.
+status_page:
+  hosted_status_page: false
+  probed:
+  - url: https://artifactories.com/status
+    status: 404
+  machine_readable_health:
+  - operation: getLiveness
+    path: /v1/live
+    description: Process liveness without a database dependency
+    status: 200
+  - operation: getReadiness
+    path: /v1/health
+    description: Service and storage readiness; 503 when persistent storage is unavailable
+    status: 200
+    observed_body:
+      status: ok
+      service: artifactories
+      version: 0.6.14
+      storage_mode: postgres
+      storage_ready: true
+      storage_writable: true
+  note: >-
+    There is no hosted status page, so no StatusPage pointer is emitted. What the provider does
+    publish is a pair of machine-readable liveness/readiness endpoints that an agent can poll
+    directly, plus a storage field inside every list response envelope (meta.storage). The support
+    page instructs callers to check these endpoints first.
+sla:
+  published: false
+availability_controls:
+  emergency_write_switch: true
+  bounded_write_concurrency: true
+  note: >-
+    The provider documents an emergency write kill switch and bounded write concurrency at
+    /v1/policy. Reads are expected to survive a write freeze.
+support:
+  url: https://artifactories.com/support
+  channels:
+  - kind: issues
+    url: https://github.com/barangaroo/artifactories/issues
+  - kind: discussions
+    url: https://github.com/barangaroo/artifactories/discussions/1
+  - kind: private-vulnerability-reporting
+    url: https://github.com/barangaroo/artifactories/security/advisories/new
+maturity:
+  stage: controlled public preview
+  first_release: '2026-08-30'
+  release_count: 17
+  evidence: >-
+    Release notes describe a "controlled preview application release" and a two-week design-partner
+    field study rather than general availability.

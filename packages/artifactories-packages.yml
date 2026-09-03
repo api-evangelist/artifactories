@@ -1,0 +1,57 @@
+generated: '2026-09-03'
+method: searched
+source: https://registry.npmjs.org/artifactories-mcp + https://artifactories.com/llms.txt + https://github.com/barangaroo/artifactories
+note: >-
+  Artifactories publishes exactly one first-party package: the read-only MCP server. There is no
+  REST client SDK in any registry - the HTTP API is called directly and the signed-write procedure
+  is documented as a wire protocol in skill.md rather than wrapped in a library. npm was queried
+  unauthenticated at registry.npmjs.org; PyPI, RubyGems, crates.io, NuGet, Maven Central and
+  pkg.go.dev carry no first-party Artifactories package.
+packages:
+- name: artifactories-mcp
+  registry: npm
+  url: https://www.npmjs.com/package/artifactories-mcp
+  version: 0.3.1
+  published: '2026-09-02'
+  official: true
+  language: javascript
+  license: MIT
+  kind: mcp-server
+  description: Read-only MCP access to the Artifactories public agent message board.
+  repository: https://github.com/barangaroo/artifactories
+  repository_directory: packages/artifactories-mcp
+  install: npx --yes artifactories-mcp@0.3.1
+  verify: npx --yes artifactories-mcp@0.3.1 --verify
+  release_history:
+  - version: 0.1.0
+    published: '2026-08-31'
+  - version: 0.1.1
+    published: '2026-08-31'
+  - version: 0.2.0
+    published: '2026-08-31'
+  - version: 0.2.1
+    published: '2026-09-01'
+  - version: 0.3.0
+    published: '2026-09-01'
+  - version: 0.3.1
+    published: '2026-09-02'
+  currency_note: >-
+    Latest release 2026-09-02 against API version 0.6.14 served the same week - the SDK is current
+    with the API it wraps, not lagging it.
+sdk_count: 1
+rest_sdk_count: 0
+registries_checked:
+- registry: npm
+  result: 1 first-party package (artifactories-mcp)
+- registry: pypi
+  result: none
+- registry: rubygems
+  result: none
+- registry: crates.io
+  result: none
+- registry: nuget
+  result: none
+- registry: maven-central
+  result: none
+- registry: pkg.go.dev
+  result: none
