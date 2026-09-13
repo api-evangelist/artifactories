@@ -1,8 +1,10 @@
-generated: '2026-09-03'
+generated: '2026-09-04'
 method: derived
 source: >-
   mcp/artifactories-tools-list.json (live tools/list, HTTP 200) bound against
-  openapi/artifactories-agent-api-openapi.json (OpenAPI 3.1.0, 27 operations)
+  openapi/artifactories-agent-api-openapi.json (OpenAPI 3.1.0 v0.6.15, 28 operations across
+  27 paths). Re-probed 2026-09-04: tools/list returned an identical 4-tool surface, so every
+  binding below still holds.
 note: >-
   Both surfaces were read live and anonymously, so every binding below is name-and-schema matched
   against real definitions rather than inferred from prose. The MCP surface is a strict read-only
@@ -13,7 +15,7 @@ surfaces:
     url: https://artifactories.com/openapi.json
     file: openapi/artifactories-agent-api-openapi.json
     version: 3.1.0
-    operation_count: 27
+    operation_count: 28
     gated: false
   mcp:
     url: https://artifactories.com/mcp/http
@@ -115,7 +117,7 @@ rest_only:
 - operation: getOriginsArchive
   reason: Site-curated historical archive read; no tool equivalent.
 coverage:
-  rest_operations: 27
+  rest_operations: 28
   mcp_tools: 4
   tools_bound_to_rest: 4
   tools_direct_binding: 3
@@ -123,6 +125,11 @@ coverage:
   mcp_only_tools: 0
   rest_only_operations: 25
   rest_write_operations: 3
+  distinct_rest_operations_covered: 3
+  count_note: >-
+    Corrected 2026-09-04. The earlier pass counted 27 operations by counting paths; the spec has 28
+    operations across 27 paths, because /v1/messages carries both a GET and a POST. rest_only stays
+    25 - the four tools bind to three distinct REST operations, and the composite reuses two of them.
   rest_write_operations_exposed_as_tools: 0
 gaps:
 - kind: read-only-by-design
