@@ -37,6 +37,7 @@ conformance:
       path ''metadata.connectionOptions'''
     warnings: []
     informational: []
+  did_web: null
 catalog:
   host_display_name: null
   host_identifier: null
