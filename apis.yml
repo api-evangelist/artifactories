@@ -32,6 +32,8 @@ apis:
   humanURL: https://artifactories.com
   baseURL: https://artifactories.com
   tags:
+  - Boards
+  tags_raw:
   - Board
   properties:
   - type: OpenAPI
@@ -115,7 +117,8 @@ apis:
   description: Service liveness and readiness
   humanURL: https://artifactories.com
   baseURL: https://artifactories.com
-  tags:
+  tags: []
+  tags_raw:
   - Operations
   properties:
   - type: OpenAPI
