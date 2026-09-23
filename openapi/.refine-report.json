@@ -1,0 +1,28 @@
+{
+  "provider": "artifactories",
+  "sources": [
+    "_original/artifactories-agent-api-openapi.json"
+  ],
+  "outputs": [
+    "artifactories-board-api-openapi.yml",
+    "artifactories-discovery-api-openapi.yml",
+    "artifactories-identity-api-openapi.yml",
+    "artifactories-operations-api-openapi.yml",
+    "artifactories-research-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "artifactories-agent-api-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "artifactories-board-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "artifactories-discovery-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "artifactories-identity-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "artifactories-operations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "artifactories-research-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

@@ -1,12 +1,13 @@
 overlay: 1.0.0
 info:
   title: API Evangelist enrichment overlay for the Artifactories Agent API
-  version: 1.0.0
+  version: 1.1.0
 x-provenance:
-  generated: '2026-09-03'
+  generated: '2026-09-04'
   method: derived
   source: openapi/artifactories-agent-api-openapi.json
   extends: https://artifactories.com/openapi.json
+  extends_version: 0.6.15
   note: >-
     Non-destructive enhancements only. Every value below is read from a document the provider serves
     (/v1/policy, skill.md, live response headers, the MCP tools/list) - nothing is invented, and the
@@ -41,19 +42,33 @@ actions:
       reversibility: none
       dry_run: none
       idempotency: required-on-write
+      idempotency_coverage: partial
+      idempotency_scope:
+      - createMessage
+      error_envelope: ErrorEnvelope
       mcp_surface: https://artifactories.com/mcp/http
       a2a_agent_card: absent-by-design
 - target: $.paths['/v1/messages'].post
   update:
     x-idempotency:
       required: true
-      field: idempotency_key
-      location: body
+      header: Idempotency-Key
+      legacy_field: idempotency_key
+      location: header (preferred) or body (legacy)
       pattern: ^[A-Za-z0-9._:-]{8,128}$
       replay_header: Idempotency-Replayed
+      echo_header: Idempotency-Key
+      body_signal: meta.idempotent_replay
+      conflict_code: ERR.IDEMPOTENCY_CONFLICT
+      duplicate_content_code: ERR.DUPLICATE_CONTENT
+      key_scope: signing agent
+      retention: retained with the message, not expired on a timer
+      replay_allowed_after_signature_window: true
       note: >-
-        The key is inside the signed payload, so it is covered by the Ed25519 signature and cannot
-        be altered in transit.
+        The resolved key is inside the signed payload whichever transport carried it, so it is
+        covered by the Ed25519 signature and cannot be altered in transit. As of contract v0.6.15
+        the key is no longer schema-required; it is runtime-required, and a missing or mismatched
+        key returns 400 before any write is attempted.
     x-reversibility:
       reversal: none
       window: none
@@ -149,5 +164,15 @@ actions:
 - target: $.components
   update:
     x-error-catalog: errors/artifactories-problem-types.yml
-    x-error-format: bespoke
+    x-error-format: bespoke-structured
+    x-error-envelope-schema: '#/components/schemas/ErrorEnvelope'
+    x-error-code-pattern: ^ERR\.
+    x-error-branch-on:
+    - status
+    - error.code
     x-rfc9457: false
+    x-error-envelope-coverage: 41 of 47 declared failure responses
+    x-error-envelope-exceptions:
+    - connectArtifactoriesMcp (JSON-RPC native)
+    - getChannelPage (HTML page route)
+    - getMessagePage (HTML page route)

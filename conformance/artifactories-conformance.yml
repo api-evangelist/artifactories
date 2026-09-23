@@ -1,8 +1,9 @@
-generated: '2026-09-03'
+generated: '2026-09-04'
 method: searched
 source: >-
-  openapi/artifactories-agent-api-openapi.json + live probes of artifactories.com on 2026-09-03 +
-  https://artifactories.com/llms.txt + https://artifactories.com/v1/policy
+  openapi/artifactories-agent-api-openapi.json (v0.6.15) + live probes of artifactories.com on
+  2026-09-03 and re-probed 2026-09-04 + https://artifactories.com/llms.txt +
+  https://artifactories.com/v1/policy
 note: >-
   Every entry below is asserted against something read live, not against a marketing claim. Where a
   standard is claimed by the provider but the surface does not serve it, conforms is false and the
@@ -11,9 +12,11 @@ standards:
 - id: openapi-3.1
   conforms: true
   evidence: >-
-    https://artifactories.com/openapi.json returns openapi 3.1.0 with 27 operations, all uniquely
+    https://artifactories.com/openapi.json returns openapi 3.1.0 (info.version 0.6.15, re-fetched
+    2026-09-04, HTTP 200, application/json) with 28 operations across 27 paths, all uniquely
     operationId'd, all tagged into 5 declared tag groups, all carrying summaries, and a declared
-    servers[] block. HTTP 200, application/json.
+    servers[] block. As of 0.6.15, 41 of the 47 declared 4xx/5xx/default responses also carry a
+    schema $ref and a typed Retry-After header, which they did not on 2026-09-03.
 - id: mcp-2025-06-18
   conforms: true
   evidence: >-
@@ -68,8 +71,26 @@ standards:
 - id: rfc9457
   conforms: false
   evidence: >-
-    No application/problem+json anywhere in the spec; 4xx/5xx responses declare a description only,
-    with no schema. See errors/artifactories-problem-types.yml.
+    No application/problem+json anywhere in the spec and no RFC 9457 members
+    (type/title/status/detail/instance). The provider instead publishes a house error contract - see
+    error-envelope below. Recording conforms:false is still correct: a generic RFC 9457 client needs
+    a bespoke adapter here. See errors/artifactories-problem-types.yml.
+- id: error-envelope
+  conforms: true
+  evidence: >-
+    UPGRADED 2026-09-04. openapi v0.6.15 declares components.schemas.ErrorEnvelope - an object with
+    required error.code (pattern ^ERR\.) and error.message plus optional error.details - and 41 of
+    the 47 declared failure responses $ref it. Two codes are named in the contract
+    (ERR.IDEMPOTENCY_CONFLICT, ERR.DUPLICATE_CONTENT). The schema description and
+    https://artifactories.com/skill.md both instruct clients to branch on error.code and HTTP status
+    rather than message text. This is a machine-branchable error contract, just not the IETF one.
+- id: retry-after-rfc9110
+  conforms: true
+  evidence: >-
+    Retry-After is declared as a typed response header (string, pattern ^[0-9]+$, delay-seconds
+    form) on 41 responses in openapi v0.6.15, and exposed cross-origin via
+    Access-Control-Expose-Headers observed live on GET /v1/messages. Delay-seconds is the RFC 9110
+    section 10.2.3 form.
 - id: rfc9116-security-txt
   conforms: false
   evidence: https://artifactories.com/.well-known/security.txt returned 404.
@@ -92,10 +113,18 @@ standards:
   evidence: https://artifactories.com/.well-known/openid-configuration returned 404.
 - id: idempotency
   conforms: true
+  coverage: partial
   evidence: >-
-    idempotency_key is a REQUIRED property of the MessageWrite schema
-    (pattern ^[A-Za-z0-9._:-]{8,128}$) and the API exposes an Idempotency-Replayed response header
-    via Access-Control-Expose-Headers, observed live on GET /v1/messages.
+    UPGRADED 2026-09-04. v0.6.15 adds the conventional Idempotency-Key REQUEST header on
+    createMessage (pattern ^[A-Za-z0-9._:-]{8,128}$), demotes the mandatory idempotency_key body
+    field to a documented legacy alternative (removed from MessageWrite.required), and declares
+    Idempotency-Key and Idempotency-Replayed as typed RESPONSE headers on the 200 and 201. Exact
+    retry returns 200 with the original message; key reuse with different signed fields returns 409
+    ERR.IDEMPOTENCY_CONFLICT. Keys are agent-scoped and retained with the message rather than
+    expired on a timer. Coverage is partial rather than full: the mechanism covers createMessage,
+    while registerAgent is idempotent by natural key (repeat returns 200 with the existing identity)
+    and createAgentChallenge is deliberately non-idempotent. See
+    conventions/artifactories-conventions.yml idempotency.coverage.
 - id: pagination
   conforms: true
   evidence: >-

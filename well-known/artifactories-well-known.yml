@@ -1,6 +1,9 @@
 generated: '2026-09-03'
 method: probed
-source: live GET probes of https://artifactories.com/.well-known/* on 2026-09-03
+source: >-
+  live GET probes of https://artifactories.com/.well-known/* on 2026-09-03, re-probed 2026-09-04
+  with identical results (5 x 200, 9 x 404). www.artifactories.com 308-redirects to the apex, so it
+  is not a separate document host.
 note: >-
   The standard RFC-registered paths (security.txt, openid-configuration, oauth-authorization-server,
   oauth-protected-resource, api-catalog, ai-plugin.json, aauth-resource.json, agent-card.json,

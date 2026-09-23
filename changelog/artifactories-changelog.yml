@@ -1,4 +1,4 @@
-generated: '2026-09-03'
+generated: '2026-09-04'
 method: searched
 source: https://github.com/barangaroo/artifactories/releases (via api.github.com, HTTP 200)
 note: >-
@@ -14,10 +14,59 @@ streams:
 - name: mcp-package
   tag_pattern: artifactories-mcp-vX.Y.Z
   current_version: artifactories-mcp-v0.3.1
-current_version: 0.6.14
-current_version_source: GET https://artifactories.com/v1/health on 2026-09-03
+current_version: 0.6.15
+current_version_source: GET https://artifactories.com/v1/health on 2026-09-04 (HTTP 200, version 0.6.15)
 release_count: 17
 window: 2026-08-30 to 2026-09-02
+undocumented_deployments:
+- versions:
+  - 0.6.13
+  - 0.6.14
+  - 0.6.15
+  finding: >-
+    STALENESS FINDING (measured 2026-09-04). The deployed service is at 0.6.15 and the OpenAPI it
+    serves is at 0.6.15, but the newest service tag and release on GitHub is v0.6.12 (2026-09-01).
+    Three deployed versions have no release note and no tag, and one of them carries a materially
+    important contract change: v0.6.15 added the shared ErrorEnvelope schema, the namespaced ERR.*
+    code space, the Idempotency-Key request header, the Idempotency-Key / Idempotency-Replayed
+    response headers, and declared Retry-After on 41 responses - while also REMOVING idempotency_key
+    from MessageWrite.required. That last one is a schema relaxation an integrator would want
+    announced. A consumer watching the only dated change record this provider publishes would not
+    know any of it happened.
+  evidence:
+  - url: https://artifactories.com/v1/health
+    status: 200
+    observed: version 0.6.15
+  - url: https://api.github.com/repos/barangaroo/artifactories/tags
+    status: 200
+    observed: newest service tag v0.6.12
+  - url: https://api.github.com/repos/barangaroo/artifactories/releases
+    status: 200
+    observed: newest service release v0.6.12, published 2026-09-01
+  - url: https://artifactories.com/changelog
+    status: 404
+    observed: no first-party changelog page
+  remediation_for_provider: >-
+    Tag and release v0.6.13 through v0.6.15, or publish a first-party /changelog. The contract
+    improved substantially and none of the improvement is discoverable from the change record.
+observed_contract_changes:
+- between: 0.6.14 and 0.6.15
+  observed_by: API Evangelist, by diffing the saved 2026-09-03 spec against the live 2026-09-04 spec
+  breaking: false
+  relaxations:
+  - idempotency_key removed from components.schemas.MessageWrite.required
+  additions:
+  - components.schemas.ErrorEnvelope with a required error.code matching ^ERR\.
+  - ERR.IDEMPOTENCY_CONFLICT and ERR.DUPLICATE_CONTENT named on the createMessage 409
+  - Idempotency-Key request header on createMessage, preferred over the legacy body field
+  - Idempotency-Key and Idempotency-Replayed response headers on the 200 and 201
+  - Retry-After declared as a response header on 41 of 47 failure responses
+  - ErrorEnvelope $ref added to 41 failure responses that previously declared no schema
+  - New documented statuses on createMessage - 403, 404, 408, 409, 413, 500 and default
+  - registerAgent gained documented 410 Challenge expired and a default response
+  note: >-
+    Recorded here because the provider published no release note for it. This entry is our
+    observation, not a provider announcement, and is labelled as such.
 entries:
 - version: artifactories-mcp-v0.3.1
   date: '2026-09-02'

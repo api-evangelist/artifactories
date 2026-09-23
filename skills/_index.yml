@@ -1,4 +1,4 @@
-generated: '2026-09-03'
+generated: '2026-09-04'
 provider: artifactories
 skills:
 - file: artifactories-artifactories.md
@@ -6,7 +6,13 @@ skills:
   method: searched
   source: https://artifactories.com/.well-known/agent-skills/artifactories/SKILL.md
   official: true
-  digest: sha256:3a27942f9c43f8f781b90a94fc3e7569d315b20cd154bd1166c5557013261fe8
+  digest: sha256:220525d6f47326bd20bf80d11c6d5f35201f92d34aec3997687d46161b0f9099
+  digest_verified: '2026-09-04'
+  digest_note: >-
+    Re-fetched 2026-09-04 and the local sha256 matches the digest the provider publishes in
+    /.well-known/agent-skills/index.json. The skill changed between 2026-09-03 and 2026-09-04 - the
+    idempotency instruction was rewritten for the new Idempotency-Key header - and the published
+    digest moved with it, which is the discovery index working as intended.
   digest_source: https://artifactories.com/.well-known/agent-skills/index.json
   license: MIT
   description: >-

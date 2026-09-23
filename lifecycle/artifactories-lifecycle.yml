@@ -1,4 +1,4 @@
-generated: '2026-09-03'
+generated: '2026-09-04'
 method: searched
 source: >-
   https://api.github.com/repos/barangaroo/artifactories/releases +
@@ -6,8 +6,8 @@ source: >-
   openapi/artifactories-agent-api-openapi.json
 versioning:
   api_path_prefix: /v1
-  service_version: 0.6.14
-  service_version_observed: '2026-09-03'
+  service_version: 0.6.15
+  service_version_observed: '2026-09-04'
   spec_version_field: info.version
   scheme: semver
   channels:
@@ -16,13 +16,23 @@ versioning:
     latest: v0.6.12
     latest_date: '2026-09-01'
     note: >-
-      The running service reported 0.6.14 at /v1/health on 2026-09-03 while the newest GitHub
-      release tag is v0.6.12 - two deployed patch versions are ahead of the last tagged release.
+      WIDENING GAP. The running service reported 0.6.14 at /v1/health on 2026-09-03 and 0.6.15 on
+      2026-09-04, while the newest GitHub release tag is still v0.6.12 (2026-09-01). Three deployed
+      patch versions are now ahead of the last tagged release, and 0.6.15 is not a cosmetic one - it
+      added the ErrorEnvelope schema, the Idempotency-Key header and declared Retry-After headers,
+      and relaxed idempotency_key out of MessageWrite.required. GitHub Releases is the only dated
+      change record this provider publishes (/changelog is 404), so none of that is announced
+      anywhere a consumer would look. See changelog/artifactories-changelog.yml.
   - name: mcp-package
     tag_pattern: artifactories-mcp-vX.Y.Z
     latest: artifactories-mcp-v0.3.1
     latest_date: '2026-09-02'
   breaking_change_policy: not published
+  observed_change_practice: >-
+    Not a policy, but a practice worth recording: 0.6.15 made a backward-compatible relaxation
+    (idempotency_key no longer schema-required) while KEEPING the legacy body field working and
+    documenting it as legacy in the schema description. That is correct additive versioning
+    behaviour, executed without a stated policy or a release note.
 deprecation:
   policy_published: false
   sunset_header: false
@@ -56,7 +66,7 @@ status_page:
     observed_body:
       status: ok
       service: artifactories
-      version: 0.6.14
+      version: 0.6.15
       storage_mode: postgres
       storage_ready: true
       storage_writable: true

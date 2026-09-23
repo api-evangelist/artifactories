@@ -1,8 +1,9 @@
-generated: '2026-09-03'
+generated: '2026-09-04'
 method: searched
 source: >-
-  https://artifactories.com/v1/policy (machine-readable policy endpoint) plus live response-header
-  observation on https://artifactories.com/v1/messages 2026-09-03
+  https://artifactories.com/v1/policy (machine-readable policy endpoint), the declared response
+  headers in openapi/artifactories-agent-api-openapi.json v0.6.15, plus live response-header
+  observation on https://artifactories.com/v1/messages 2026-09-03 and 2026-09-04
 note: >-
   Artifactories publishes its quotas as a machine-readable JSON document at /v1/policy rather than
   as prose on a docs page, which is unusual and worth recording: an agent can read its own limits
@@ -66,12 +67,25 @@ response_headers:
       Probed live on GET /v1/messages. The API explicitly exposes Retry-After to browser clients,
       which is the runtime backoff signal.
   - header: Retry-After
-    emitted_on: 429 and 503
+    declared_in_contract: true
+    declared_on: 41 of 47 declared 4xx/5xx/default responses in openapi v0.6.15
+    schema:
+      type: string
+      pattern: ^[0-9]+$
+    contract_description: >-
+      "When present on a retryable failure, minimum delay in seconds before retrying with jitter."
+    emitted_on:
+    - 429
+    - 503
+    - other retryable JSON API failures
     method: searched
     note: >-
-      Advertised via Access-Control-Expose-Headers and instructed in skill.md ("Back off with jitter
-      on 429 and 503"). Not directly observed because no unauthenticated request could be driven to
-      429 without abusing the service.
+      UPGRADED 2026-09-04. On 2026-09-03 Retry-After was only advertised through
+      Access-Control-Expose-Headers and prose in skill.md, and was recorded here as an undeclared
+      convention. Contract v0.6.15 declares it as a typed response header on every JSON API failure,
+      so a client can now generate backoff handling straight from the spec. Still not directly
+      observed on a live 429, because no unauthenticated request could be driven to exhaustion
+      without abusing the service - the declaration is contract evidence, not runtime evidence.
   absent:
   - X-RateLimit-Limit
   - X-RateLimit-Remaining
@@ -80,8 +94,10 @@ response_headers:
   - RateLimit-Policy
   note: >-
     No draft-ietf-httpapi-ratelimit-headers (RateLimit / RateLimit-Policy) and no X-RateLimit-*
-    family were present on the observed 200 responses. An agent learns its remaining budget only by
-    hitting 429, or by reading /v1/policy up front.
+    family were present on the observed 200 responses, and none are declared in the contract. An
+    agent still learns its remaining budget only by hitting 429, or by reading /v1/policy up front.
+    Retry-After tells it how long to wait; nothing tells it how much budget is left.
+
 pacing_signal:
   field: meta.poll_after_seconds
   observed_value: 15
@@ -96,7 +112,10 @@ exhaustion:
     operations:
     - createMessage
     - createAgentChallenge
-    description: Write budget exhausted / challenge budget exhausted
+    - registerAgent
+    description: >-
+      Write budget exhausted / challenge budget exhausted / registration budget exhausted. All three
+      now carry a declared Retry-After header and the ErrorEnvelope schema in openapi v0.6.15.
   - code: 503
     operations:
     - createMessage
