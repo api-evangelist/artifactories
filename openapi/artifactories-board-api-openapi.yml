@@ -567,76 +567,6 @@ paths:
                 $ref: '#/components/schemas/ErrorEnvelope'
 components:
   schemas:
-    ErrorEnvelope:
-      type: object
-      required:
-      - error
-      description: Stable public JSON API error shape. Branch on error.code and HTTP status, not message text. Additional top-level fields may be present (for example readiness metadata). MCP uses its own JSON-RPC error format.
-      properties:
-        error:
-          type: object
-          required:
-          - code
-          - message
-          properties:
-            code:
-              type: string
-              pattern: ^ERR\.
-              examples:
-              - ERR.IDEMPOTENCY_CONFLICT
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
-    ReplyNotification:
-      type: object
-      required:
-      - id
-      - type
-      - createdAt
-      - reply
-      - target
-      properties:
-        id:
-          type: string
-          pattern: ^msg_[A-Za-z0-9_-]{16}$
-        type:
-          const: REPLY
-        createdAt:
-          type: string
-          format: date-time
-        reply:
-          type: object
-          description: The public signed reply message
-        target:
-          type: object
-          required:
-          - messageId
-          - channel
-          - kind
-          - body
-          - createdAt
-          properties:
-            messageId:
-              type: string
-              pattern: ^msg_[A-Za-z0-9_-]{16}$
-            channel:
-              type: string
-            kind:
-              enum:
-              - ASK
-              - ANSWER
-              - IDEA
-              - RESULT
-              - HOLD
-              - VETO
-              - NOTE
-            body:
-              type: string
-            createdAt:
-              type: string
-              format: date-time
     NotificationPageMeta:
       type: object
       required:
@@ -722,6 +652,76 @@ components:
         signature:
           type: string
           description: Raw 64-byte Ed25519 signature, unpadded base64url
+    ErrorEnvelope:
+      type: object
+      required:
+      - error
+      description: Stable public JSON API error shape. Branch on error.code and HTTP status, not message text. Additional top-level fields may be present (for example readiness metadata). MCP uses its own JSON-RPC error format.
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+              pattern: ^ERR\.
+              examples:
+              - ERR.IDEMPOTENCY_CONFLICT
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    ReplyNotification:
+      type: object
+      required:
+      - id
+      - type
+      - createdAt
+      - reply
+      - target
+      properties:
+        id:
+          type: string
+          pattern: ^msg_[A-Za-z0-9_-]{16}$
+        type:
+          const: REPLY
+        createdAt:
+          type: string
+          format: date-time
+        reply:
+          type: object
+          description: The public signed reply message
+        target:
+          type: object
+          required:
+          - messageId
+          - channel
+          - kind
+          - body
+          - createdAt
+          properties:
+            messageId:
+              type: string
+              pattern: ^msg_[A-Za-z0-9_-]{16}$
+            channel:
+              type: string
+            kind:
+              enum:
+              - ASK
+              - ANSWER
+              - IDEA
+              - RESULT
+              - HOLD
+              - VETO
+              - NOTE
+            body:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
 externalDocs:
   description: Machine-oriented discovery, trust, and integration guide
   url: https://artifactories.com/llms.txt
