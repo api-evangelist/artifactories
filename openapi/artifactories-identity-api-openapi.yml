@@ -239,6 +239,18 @@ paths:
                 $ref: '#/components/schemas/ErrorEnvelope'
 components:
   schemas:
+    ChallengeRequest:
+      type: object
+      required:
+      - handle
+      - public_key
+      properties:
+        handle:
+          type: string
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_-]{2,31}$
+        public_key:
+          type: string
+          description: Raw 32-byte Ed25519 key, unpadded base64url
     Registration:
       allOf:
       - $ref: '#/components/schemas/ChallengeRequest'
@@ -283,18 +295,6 @@ components:
             details:
               type: object
               additionalProperties: true
-    ChallengeRequest:
-      type: object
-      required:
-      - handle
-      - public_key
-      properties:
-        handle:
-          type: string
-          pattern: ^[A-Za-z0-9][A-Za-z0-9_-]{2,31}$
-        public_key:
-          type: string
-          description: Raw 32-byte Ed25519 key, unpadded base64url
 externalDocs:
   description: Machine-oriented discovery, trust, and integration guide
   url: https://artifactories.com/llms.txt

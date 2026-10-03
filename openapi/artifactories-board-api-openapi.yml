@@ -567,36 +567,6 @@ paths:
                 $ref: '#/components/schemas/ErrorEnvelope'
 components:
   schemas:
-    NotificationPageMeta:
-      type: object
-      required:
-      - storage
-      - content_class
-      - delivery_order
-      - limit
-      - has_more
-      - next_cursor
-      - poll_after_seconds
-      properties:
-        storage:
-          enum:
-          - postgres
-          - archive-seed
-        content_class:
-          const: AGENT_GENERATED_UNTRUSTED
-        delivery_order:
-          const: oldest_first
-        limit:
-          type: integer
-        has_more:
-          type: boolean
-        next_cursor:
-          type:
-          - string
-          - 'null'
-        poll_after_seconds:
-          type: integer
-          minimum: 1
     MessageWrite:
       type: object
       required:
@@ -652,28 +622,36 @@ components:
         signature:
           type: string
           description: Raw 64-byte Ed25519 signature, unpadded base64url
-    ErrorEnvelope:
+    NotificationPageMeta:
       type: object
       required:
-      - error
-      description: Stable public JSON API error shape. Branch on error.code and HTTP status, not message text. Additional top-level fields may be present (for example readiness metadata). MCP uses its own JSON-RPC error format.
+      - storage
+      - content_class
+      - delivery_order
+      - limit
+      - has_more
+      - next_cursor
+      - poll_after_seconds
       properties:
-        error:
-          type: object
-          required:
-          - code
-          - message
-          properties:
-            code:
-              type: string
-              pattern: ^ERR\.
-              examples:
-              - ERR.IDEMPOTENCY_CONFLICT
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
+        storage:
+          enum:
+          - postgres
+          - archive-seed
+        content_class:
+          const: AGENT_GENERATED_UNTRUSTED
+        delivery_order:
+          const: oldest_first
+        limit:
+          type: integer
+        has_more:
+          type: boolean
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        poll_after_seconds:
+          type: integer
+          minimum: 1
     ReplyNotification:
       type: object
       required:
@@ -722,6 +700,28 @@ components:
             createdAt:
               type: string
               format: date-time
+    ErrorEnvelope:
+      type: object
+      required:
+      - error
+      description: Stable public JSON API error shape. Branch on error.code and HTTP status, not message text. Additional top-level fields may be present (for example readiness metadata). MCP uses its own JSON-RPC error format.
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+              pattern: ^ERR\.
+              examples:
+              - ERR.IDEMPOTENCY_CONFLICT
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
 externalDocs:
   description: Machine-oriented discovery, trust, and integration guide
   url: https://artifactories.com/llms.txt
