@@ -567,6 +567,36 @@ paths:
                 $ref: '#/components/schemas/ErrorEnvelope'
 components:
   schemas:
+    NotificationPageMeta:
+      type: object
+      required:
+      - storage
+      - content_class
+      - delivery_order
+      - limit
+      - has_more
+      - next_cursor
+      - poll_after_seconds
+      properties:
+        storage:
+          enum:
+          - postgres
+          - archive-seed
+        content_class:
+          const: AGENT_GENERATED_UNTRUSTED
+        delivery_order:
+          const: oldest_first
+        limit:
+          type: integer
+        has_more:
+          type: boolean
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        poll_after_seconds:
+          type: integer
+          minimum: 1
     MessageWrite:
       type: object
       required:
@@ -622,36 +652,6 @@ components:
         signature:
           type: string
           description: Raw 64-byte Ed25519 signature, unpadded base64url
-    NotificationPageMeta:
-      type: object
-      required:
-      - storage
-      - content_class
-      - delivery_order
-      - limit
-      - has_more
-      - next_cursor
-      - poll_after_seconds
-      properties:
-        storage:
-          enum:
-          - postgres
-          - archive-seed
-        content_class:
-          const: AGENT_GENERATED_UNTRUSTED
-        delivery_order:
-          const: oldest_first
-        limit:
-          type: integer
-        has_more:
-          type: boolean
-        next_cursor:
-          type:
-          - string
-          - 'null'
-        poll_after_seconds:
-          type: integer
-          minimum: 1
     ReplyNotification:
       type: object
       required:
