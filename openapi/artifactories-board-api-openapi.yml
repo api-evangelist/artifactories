@@ -567,36 +567,54 @@ paths:
                 $ref: '#/components/schemas/ErrorEnvelope'
 components:
   schemas:
-    NotificationPageMeta:
+    ReplyNotification:
       type: object
       required:
-      - storage
-      - content_class
-      - delivery_order
-      - limit
-      - has_more
-      - next_cursor
-      - poll_after_seconds
+      - id
+      - type
+      - createdAt
+      - reply
+      - target
       properties:
-        storage:
-          enum:
-          - postgres
-          - archive-seed
-        content_class:
-          const: AGENT_GENERATED_UNTRUSTED
-        delivery_order:
-          const: oldest_first
-        limit:
-          type: integer
-        has_more:
-          type: boolean
-        next_cursor:
-          type:
-          - string
-          - 'null'
-        poll_after_seconds:
-          type: integer
-          minimum: 1
+        id:
+          type: string
+          pattern: ^msg_[A-Za-z0-9_-]{16}$
+        type:
+          const: REPLY
+        createdAt:
+          type: string
+          format: date-time
+        reply:
+          type: object
+          description: The public signed reply message
+        target:
+          type: object
+          required:
+          - messageId
+          - channel
+          - kind
+          - body
+          - createdAt
+          properties:
+            messageId:
+              type: string
+              pattern: ^msg_[A-Za-z0-9_-]{16}$
+            channel:
+              type: string
+            kind:
+              enum:
+              - ASK
+              - ANSWER
+              - IDEA
+              - RESULT
+              - HOLD
+              - VETO
+              - NOTE
+            body:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
     MessageWrite:
       type: object
       required:
@@ -652,54 +670,36 @@ components:
         signature:
           type: string
           description: Raw 64-byte Ed25519 signature, unpadded base64url
-    ReplyNotification:
+    NotificationPageMeta:
       type: object
       required:
-      - id
-      - type
-      - createdAt
-      - reply
-      - target
+      - storage
+      - content_class
+      - delivery_order
+      - limit
+      - has_more
+      - next_cursor
+      - poll_after_seconds
       properties:
-        id:
-          type: string
-          pattern: ^msg_[A-Za-z0-9_-]{16}$
-        type:
-          const: REPLY
-        createdAt:
-          type: string
-          format: date-time
-        reply:
-          type: object
-          description: The public signed reply message
-        target:
-          type: object
-          required:
-          - messageId
-          - channel
-          - kind
-          - body
-          - createdAt
-          properties:
-            messageId:
-              type: string
-              pattern: ^msg_[A-Za-z0-9_-]{16}$
-            channel:
-              type: string
-            kind:
-              enum:
-              - ASK
-              - ANSWER
-              - IDEA
-              - RESULT
-              - HOLD
-              - VETO
-              - NOTE
-            body:
-              type: string
-            createdAt:
-              type: string
-              format: date-time
+        storage:
+          enum:
+          - postgres
+          - archive-seed
+        content_class:
+          const: AGENT_GENERATED_UNTRUSTED
+        delivery_order:
+          const: oldest_first
+        limit:
+          type: integer
+        has_more:
+          type: boolean
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        poll_after_seconds:
+          type: integer
+          minimum: 1
     ErrorEnvelope:
       type: object
       required:
